@@ -1,4 +1,4 @@
-﻿@[TOC](深入理解计算机系统——第十一章 Network Programming)
+﻿深入理解计算机系统——第十一章 Network Programming
 
 资源：
 > [视频课程](https://www.bilibili.com/video/BV1iW411d7hd?p=21)
@@ -110,7 +110,7 @@ The crucial property of an **internet** is that it can consist of **different LA
     - **LAN1 frame** 的 **payload** 就是一个 **internet packet**，而该 **internet packer** 的 **payload** 是实际传输的**数据 data**。
 3. LAN1 适配器将该帧复制到网络上。
 4. 当**帧**到达**路由器**时，路由器的 LAN1 **适配器**读该帧的数据然后传送给 **protocol software**。
-5. **路由器**根据**帧**中的 **internet packet header (PH)** 中获取 **destination internet address**（主机 B 的 IP 地址），然后将其作为**路由表（routing table）**的索引来决定将这个**包（packet）**转发到哪个**端口**，此例中为 LAN2。路由器去掉旧的帧头 FH1，然后添加新的帧头 FH2，该帧头记录主机 B 的 MAC 地址，然后将该帧传递给 LAN2 适配器。
+5. **路由器**根据**帧**中的 **internet packet header (PH)** 中获取 **destination internet address**（主机 B 的 IP 地址），然后将其作为**路由表（routing table）**的索引来决定将这个**包（packet）**转发到哪个**端口**，此例中为 LAN2。路由器去掉旧的帧头 FH1，然后添加新的帧头 FH2，该帧头记录主机 B 的 MAC 地址，然后将该帧传递给 LAN2 适配器。以太网帧的目的地址是下一跳的 MAC 地址，因此会动态变化，而 IP 数据报的目的地址是最终目的主机的 IP 地址，固定不变。
 6.  路由器的 LAN2 适配器将帧复制到网络。
 7. 当帧达到主机 B后，主机 B的适配器读取该帧数据然后传送给协议软件。
 8. 主机 B的协议软件剥离帧头 FH2 和包头 PH2，当服务器有读这些数据的系统调用时，协议软件将最终的数据复制到服务器的虚拟地址空间。
