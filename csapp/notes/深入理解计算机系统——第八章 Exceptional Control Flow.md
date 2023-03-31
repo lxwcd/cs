@@ -1,4 +1,4 @@
-﻿@[TOC](深入理解计算机系统——第八章 Exceptional Control Flow)
+﻿深入理解计算机系统——第八章 Exceptional Control Flow
 
 资源：
 > [视频课程](https://www.bilibili.com/video/BV1iW411d7hd?p=14)
@@ -209,7 +209,7 @@ Unix provides **a number of system calls** for manipulating processes from C pro
 进程被**挂起**（suspended）且**不会被调度**。A process **stops** as a result of receiving a **SIGSTOP**, **SIGTSTP**, **SIGTTIN**, or **SIGTTOU** signal, and it **remains** **stopped** **until** it receives a **SIGCONT** signal, at which point it becomes running again.
 
 - **Terminated**
-进程**永久性的暂停**。三种情况造成进程终止：接收到一个信号，该信号的默认行为就是终止进程；从主程序返回；调用 exit 函数。
+进程**永久性的暂停**。三种情况造成进程终止：接收到一个信号，该信号的默认行为就是终止进程；从主程序返回；调用 **exit** 函数。
 
 ### exit 函数：
 
@@ -221,7 +221,7 @@ Unix provides **a number of system calls** for manipulating processes from C pro
 
 <br/>
 
-### 创建进程
+### fork 创建进程
 一个父进程能通过调用 fork 函数创建子进程：
 
 ![fork](https://img-blog.csdnimg.cn/a726d6e90f624f149257d909a1820220.png)
@@ -272,7 +272,7 @@ For a program running on a **single processor**, any **topological sort (total o
 ![waitpid](https://img-blog.csdnimg.cn/0a57d12dac6145859ed0fb3a5057d415.png)
 <br/>
 
-- 默认情况，即 `options` 为 0，`waitpid` 将**挂起**调用它的进程的执行，直到**等待集合**（wait set）中的一个**子进程终止**。
+- 默认情况，即 `options` 为 0，`waitpid` 将**挂起**调用它的进程的执行，直到**等待集合**（wait set）中的**一个子进程终止**。
 - 如果在调用 `waitpid` 时子进程已经终止，则该函数立即返回。
 - 以上两种情况子进程成功终止时 `waitpid` 返回令它返回的**子进程的 PID**，此时，**被终止的子进程已经被回收，内核会删除它在系统中的所有痕迹**。
 
@@ -286,7 +286,10 @@ For a program running on a **single processor**, any **topological sort (total o
 ### Modifying the Default Behavior
 可用通过修改 `options` 参数为 **WNOHANG**,，**WUNTRACED** 和 **WCONTINUED** 的各种组合来修改默认行为：
 - **WNOHANG**
+> [waitpid, wnohang, wuntraced. How do I use these](https://stackoverflow.com/questions/33508997/waitpid-wnohang-wuntraced-how-do-i-use-these)
+
 如果目前在**等待集合**中**没有子进程终止**，则**立即返回 0**，而不用等待子进程终止。其他情况则和默认行为相同。
+
 
 - **WUNTRACED**
 将调用它的进程**挂起**（suspend）直到等待集合中有一个进程变成终止（terminated）或者停止（stopped）的状态，并返回造成该函数返回的子进程的 PID。
@@ -420,6 +423,8 @@ A **signal** is a small **message** that notifies a **process** that an event of
 - **Signal type** is identified by **small integer IDs (1-30)**
 - Only **information** in a **signal** is its **ID** and the fact that it arrived
 - `SIGINT` 信号会中断键盘输入，可以按 `Ctrl` + `C` 发送该信号
+- linux 中用 `kill -L` 可查看信号类型
+
 
 <br/>
 
@@ -448,7 +453,7 @@ Some possible ways to react:
 <br/>
 
 **pending signal**: 已经发送但没有被接收的信号叫**待处理信号**（pending signal）。
-- 任何时候一种类型最多只有一个待处理信号
+- 任何时候**一种类型最多只有一个待处理信号**
 - 如果一个进程已经有一个类型为 k 的待处理信号，则以后发送的类型为 k 的信号会被丢弃
 
 进程能选择性的 **阻塞（block）** 某个特定信号的接受，但一个信号被阻塞时，不会影响该信号的发送，但不会被接收，直到进程取消对其的阻塞。
