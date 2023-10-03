@@ -10,7 +10,7 @@
 > [Heap - Part I](https://www.cnblogs.com/yxqxx/p/13883084.html)
 > [CSAPP-MallocLab](https://blog.csdn.net/qq_45531291/article/details/122629911) 
 > [CMU CSAPP笔记 第九章](https://blog.csdn.net/winter_wu_1998/article/details/81152540)
-> 
+> 虚拟内存科普视频，少但便于理解：[Virtual Memory](https://www.youtube.com/watch?v=qcBIvnQt0Bw&list=PLiwt1iVUib9s2Uo5BeYmwkDFUh70fJPxX&ab_channel=DavidBlack-Schaffer) 
 
 
 # 9.1 Physical and Virtual Addressing

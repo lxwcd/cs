@@ -1,4 +1,4 @@
-﻿@[TOC](深入理解计算机系统——第六章 The Memory Hierarchy)
+﻿深入理解计算机系统——第六章 The Memory Hierarchy
 
 资源：
 > [视频课程](https://www.bilibili.com/video/BV1iW411d7hd?p=11&vd_source=a99dfd145a3e6aa8000930c149d4bf58)
