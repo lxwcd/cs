@@ -132,7 +132,7 @@ Figure 11.8 shows the basic hardware and software organization of an Internet cl
 ![1](https://img-blog.csdnimg.cn/96b0ff760f2146688a1bfe32575b4d21.png)
 
 6. IP 地址点分十进制字符串和二进制网络字节序之间转换函数：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/4515f0b51fff4deabf653bf981583258.png)
+![](https://img-blog.csdnimg.cn/4515f0b51fff4deabf653bf981583258.png)
 函数名 `_` 后面的 `n` 表示 `network`，`p` 表示 `presentation`，这两个函数能操作 32 位的 IPv4 地址（AF_INET）或者 128 位的 IPv6 地址（AF_INET6）。
 `inet_pton` 将点分十进制的字符串（src）转换为二进制的网络字节序（dst）。
 `inet_ntop` 将二进制的网络字节序（src）转换为点分十进制的字符串（dst）。
@@ -142,7 +142,7 @@ Figure 11.8 shows the basic hardware and software organization of an Internet cl
 
 **域名**采用**层次树状结构**来命名，**不区分大小写**，其结构如下：
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/0bd2365bbc5347789a791a1632901842.png)
+![](https://img-blog.csdnimg.cn/0bd2365bbc5347789a791a1632901842.png)
 
 每个主机都有一个本地定义的域名 `localhost`，总是映射为**回送地址**（lookback address）127.0.0.1。
 
@@ -174,7 +174,8 @@ The **sockets interface** is a set of functions that are used in conjunction wit
 - 对于应用程序，套接字是一个有相应描述符的打开文件。
 
 2. **客户端和服务器通过读写套接字描述符来通信**
-![在这里插入图片描述](https://img-blog.csdnimg.cn/87145318281845b59e98608902200c12.png)
+![](https://img-blog.csdnimg.cn/87145318281845b59e98608902200c12.png)
+
 3. **套接字和普通的 I/O 文件的区别**
 The main distinction between regular file I/O and socket I/O is how the application "open" the socket descriptors.
 
@@ -183,21 +184,21 @@ The main distinction between regular file I/O and socket I/O is how the applicat
 **套接字地址结构：**
 - **Generic socket address**
 总共 16 字节，前两字节指明协议类型。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/be3030e875bd4b94a4035d795ed93248.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/7b83b2fe1c414c4ebf45f943d2c73205.png)
-
+![](https://img-blog.csdnimg.cn/be3030e875bd4b94a4035d795ed93248.png)
+![](https://img-blog.csdnimg.cn/7b83b2fe1c414c4ebf45f943d2c73205.png)
 
 - **IP socket address structure**
 总共 16 字节，前 2 字节协议类型为 `AF_INET`，表示使用 `IPV4` 协议；`sin_port` 占两个字节，表示端口号，**大端字节序**；`sin_addr` 占 4 字节，表示 IP 地址；最后的 8 个字节用来填充。
 `sockadd_in` 可以看成 `sock_addr` 的子类。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/349d6ffaad2247e58837bccbb4511b71.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/e1b7d9ce28c04fc4b38378225e5b256c.png)
+![](https://img-blog.csdnimg.cn/349d6ffaad2247e58837bccbb4511b71.png)
+![](https://img-blog.csdnimg.cn/e1b7d9ce28c04fc4b38378225e5b256c.png)
+
 - **IP 地址**和**端口号**在网络中都是**大端字节序**。
 
 ## 11.4.2 The socket Function
 **Clients** and **servers** use the **socket** function to create a **socket descriptor**.
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/94ae91c803fc4f6fb3aec07e5de55808.png)
+![](https://img-blog.csdnimg.cn/94ae91c803fc4f6fb3aec07e5de55808.png)
 
 ```cpp
 clientfd = Socket(AF_INET, SOCK_STREAM, 0);
@@ -210,7 +211,7 @@ clientfd = Socket(AF_INET, SOCK_STREAM, 0);
 ## 11.4.3 The connect Function
 客户端通过 `connect` 函数和服务器建立连接。
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/f988bd22f65e432db11fbe3e48f3a9d4.png)
+![](https://img-blog.csdnimg.cn/f988bd22f65e432db11fbe3e48f3a9d4.png)
 
 - `addr` 为服务器套接字地址。
 - `addrlen` 为 `sizeof(sockaddr_in)`。
@@ -221,7 +222,8 @@ clientfd = Socket(AF_INET, SOCK_STREAM, 0);
 ## 11.4.4 The bind Function
 The remaining sockets functions—**bind**, **listen**, and **accept**—are used by **servers** to establish connections with **clients**.
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/40bf963d91e847629128b6a3875be67a.png)
+![](https://img-blog.csdnimg.cn/40bf963d91e847629128b6a3875be67a.png)
+
 - `bind` 函数要求内核将服务器的套接字地址 `add` 和套接字描述符 `sockfd` 关联起来。
 - `addrlen` 为 `sizeof(sockaddr_in)`。
 
@@ -230,28 +232,30 @@ The remaining sockets functions—**bind**, **listen**, and **accept**—are use
 
 **服务器**可以调用 `listen` 函数来通知内核该**描述符**将被**服务器**使用。
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/f1853fb13ff8418e9e91216aa2f2d095.png)
+![](https://img-blog.csdnimg.cn/f1853fb13ff8418e9e91216aa2f2d095.png)
+
 - `listen` 函数将 `sockfd` 从**主动套接字**转换为**监听套接字**（listening socket），用来接收**客户端**发送的连接请求。
 - The `backlog` argument is a hint about the number of **outstanding connection requests** that the **kernel** should **queue up** before it starts to **refuse requests**.
 
 ## 11.4.6 The accept Function
 **服务器**通过调用 `accept` 函数来等待**客户端**的**连接**请求。
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/57cc302b45634fd1afcffcecb6c3c229.png)
+![](https://img-blog.csdnimg.cn/57cc302b45634fd1afcffcecb6c3c229.png)
 
 `accept` 函数等待来自**客户端**的**连接**请求到达**监听描述符** `listenfd`，然后将**客户端的套接字地址**填写到 `addr` 中，最后返回一个**已连接的描述符**用来和**客户端**通信。
 
 **监听描述符**和**连接描述符**的区别：
-- **监听描述符**是**客户端**请求**连接**的末端。
+- **监听描述符**是**客户端**请求**连接**的端点。
 - **监听描述符**只**创建一次**，存在于**服务器的整个生命周期**。
-- **连接描述符**是**客户端**和**服务器**创建的**连接**的末端。
+- **连接描述符**是**客户端**和**服务器**创建的**连接**的端点。
 - **连接描述符**在每次**服务器**接收一个**连接请求**时**创建**，只在**服务器**为**客户端**提供服务的过程中存在。
 
 <br/>
 
 监听和连接描述符的关系见下图：
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/63a38a2a437141f5843fb5808a5a4afc.png)
+![](https://img-blog.csdnimg.cn/63a38a2a437141f5843fb5808a5a4afc.png)
+
 1. 服务器调用 `accept` 函数来等待连接请求到达监听描述符。
 2. 客户端调用 `connect` 函数，向 `listenfd` 发送连接请求。
 3. 服务器调用 `accecpt` 函数打开一个新的已连接的描述符 `connfd` ，在 `clientfd` 和 `connfd` 之间创建连接，返回 `connfd` 给应用程序。客户端和服务器能通信。
@@ -272,7 +276,7 @@ The **getaddrinfo** function **converts string representations of hostnames, hos
 1. `host` 参数是域名或者数字形式的地址（如点分十进制的 IP 地址），可以为空 NULL。
 2. `service` 参数是十进制的端口号或者服务名（如 http 协议），可以为空 NULL。
 3. `host` 和 `service` 不能同时为空 NULL。
-4. `hint` 是可选参数，是一个指向 `addrinfo` 结构体的指针，结构体如下，通常使用时，通过 `memset` 先将整个结构体清空，然后设置几个选择的字段。：
+4. `hint` 是可选参数，是一个指向 `addrinfo` 结构体的指针，结构体如下，通常使用时，通过 `memset` 先将整个结构体清空，然后设置几个选择的字段。
 ![fig 11.16](https://img-blog.csdnimg.cn/33807ed821c34924835be4d63981c5eb.png)
 5. Given **host** and **service** (the two components of a socket address), **getaddrinfo** returns a `result` that points to a **linked list of addrinfo structures**, each of which points to a **socket address structure** that corresponds to **host** and **service**.
 **Clients**: walk this **list**, trying each **socket address** in turn, untill the **calls** to **socket** and **connect** succeed.	
@@ -281,7 +285,7 @@ The **getaddrinfo** function **converts string representations of hostnames, hos
 6. By default, **getaddrinfo** can **return** both **IPv4** and **IPv6** socket addresses. Setting `ai_family` to **AF_INET** restricts the list to **IPv4** addresses. Setting it to **AF_INET6** restricts the list to **IPv6** addresses.
 7. Helper functions:
 - **freeadderinfo**	frees the entire linked list.
-- 	**gai_strerror** converts error code to an error message.
+- **gai_strerror** converts error code to an error message.
 
 
 ### The getnameinfo Function
