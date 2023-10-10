@@ -143,3 +143,65 @@ int pthread_join(pthread_t tid, void **thread_return);
 
 The `pthread_join` function **blocks** until thread `tid` terminates, assigns the generic (void *) pointer returned by the thread routine to the location pointed to by `thread_return`, and then **reaps** any memory resources held by the terminated thread.
 
+## 12.3.6 Detaching Threads
+At any point in time, a thread is **joinable** or **detached**. 
+
+A **joinable** thread can be **reaped** and **killed** by other threads. 
+Its memory resources (such as the stack) are not freed until it is reaped by another thread. 
+
+In contrast, a **detached** thread cannot be **reaped** or **killed** by other threads. 
+Its memory resources are freed automatically by the system when it terminates.
+
+By default, threads are created joinable. 
+
+In order to avoid memory leaks, each joinable thread should be either explicitly reaped by another thread or detached by a call to the `pthread_detach` function.
+
+```cpp
+#include <pthread.h>
+int pthread_detach(pthread_t tid);
+//Returns: 0 if OK, nonzero on error
+```
+Threads can detach themselves by calling pthread_detach with an argument of pthread_ self()
+
+## 12.3.7 Initializing Threads
+```cpp
+#include <pthread.h>
+pthread_once_t once_control = PTHREAD_ONCE_INIT;
+int pthread_once(pthread_once_t *once_control, void (*init_routine)(void));
+//Always returns 0
+```
+
+The `once_control` variable is a global or static variable that is always initialized to `PTHREAD_ONCE_INIT`. 
+
+The first time you call `pthread_once` with an argument of `once_control`, it invokes `init_routine`, which is a function with no input arguments that returns nothing. 
+
+Subsequent calls to pthread_once with the same `once_control` variable do nothing. 
+
+The `pthread_once` function is useful whenever you need to dynamically initialize global variables that are shared by
+multiple threads. 
+
+
+********
+`pthread_once`函数和线程创建函数（如`pthread_create`）之间存在以下区别：
+
+1. 功能不同：`pthread_once`函数用于实现只执行一次的初始化操作，通常用于初始化某个全局变量或执行一次性的资源分配。而线程创建函数（如`pthread_create`）用于创建新的线程，使得新线程可以执行指定的线程例程。
+
+2. 调用方式不同：`pthread_once`函数是通过在单个线程中调用来保证其中的代码只执行一次。通常，它是在应用程序初始化过程中的某个地方调用，以确保初始化代码只被执行一次。而线程创建函数（如`pthread_create`）是由一个线程调用，用于创建新的线程。
+
+3. 返回值不同：`pthread_once`函数的返回值是一个整数，用于指示初始化操作是否成功执行。线程创建函数（如`pthread_create`）的返回值是一个整数，表示线程创建的结果，成功时返回0，错误时返回相应的错误码。
+
+4. 使用场景不同：`pthread_once`函数通常用于初始化全局变量或执行一次性的资源分配，以确保这些操作只执行一次。而线程创建函数（如`pthread_create`）用于创建新的线程，用于并发执行不同的任务或逻辑。
+
+总的来说，`pthread_once`函数和线程创建函数（如`pthread_create`）具有不同的功能和用途。`pthread_once`函数用于实现只执行一次的初始化操作，而线程创建函数用于创建新的线程，使得新线程可以并发执行指定的任务或逻辑。
+
+## 12.3.8 A Concurrent Server Based on Threads
+示例如下：
+
+![](img/2023-10-10-23-25-12.png)
+
+
+In order to avoid the potentially deadly race, we must assign each connected descriptor returned by accept to its own dynamically allocated memory block, as shown in lines 21–22.
+
+具体分析见书中描述，分析不恰当的代码可能造成死锁，以及避免内存泄漏
+
+# 12.4 Shared Variables in Threaded Programs
