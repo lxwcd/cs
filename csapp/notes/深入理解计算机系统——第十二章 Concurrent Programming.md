@@ -205,3 +205,102 @@ In order to avoid the potentially deadly race, we must assign each connected des
 具体分析见书中描述，分析不恰当的代码可能造成死锁，以及避免内存泄漏
 
 # 12.4 Shared Variables in Threaded Programs
+## 12.4.1 Threads Memory Model
+A pool of concurrent threads runs in the context of a process. 
+Each thread has its own separate thread context, which includes a thread ID, stack, stack pointer, program counter, condition codes, and general-purpose register values.  
+Each thread shares the rest of the process context with the other threads.
+
+## 12.4.2 Mapping Variables to Memory
+Variables in threaded C programs are mapped to virtual memory according to their storage classes:
+- Global variables
+被所有线程共享
+- Local automatic variables
+A local automatic variable is one that is declared inside a function without the static attribute.
+每个线程独有，线程自己的栈中
+- Local static variables
+所有线程共享
+
+## 12.4.3 Shared Variables
+We say that a variable v is shared if and only if one of its instances is referenced by more than one thread. 
+
+# 12.5 Synchronizing Threads with Semaphores
+
+## 12.5.1 Progress Graphs
+A progress graph models the execution of n concurrent threads as a trajectory through an n-dimensional Cartesian space. 
+
+## 12.5.2 Semaphores
+A semaphore, s, is a global variable with a nonnegative integer value that can only be manipulated by two special operations, called P and V.
+
+Semaphores provide a convenient way to ensure mutually exclusive access to shared variables.
+
+P 操作和 V 操作是原子操作
+
+- P
+当一个进程要访问共享资源时，检查信号量的值是否大于 0，是则将值减 1，然后继续访问资源；
+如果信号量为 0，则将进程进入 sleep 状态，等待其他进程释放资源
+- V
+当一个进程使用完共享资源后，执行 V 操作，将信号量的值加 1
+如果此时有其他进程处于 sleep 状态在等待该信号量资源，则选择其中一个唤醒，使其可以执行 V 操作
+
+
+信号量操作函数：
+```cpp
+#include <semaphore.h>
+int sem_init(sem_t *sem, 0, unsigned int value);
+int sem_wait(sem_t *s); /* P(s) */
+int sem_post(sem_t *s); /* V(s) */
+//Returns: 0 if OK, −1 on error
+```
+
+信号量使用前必须初始化，表明可用资源的数量
+
+wrapper 函数：
+```cpp
+#include "csapp.h"
+void P(sem_t *s); /* Wrapper function for sem_wait */
+void V(sem_t *s); /* Wrapper function for sem_post */
+//Returns: nothing
+```
+
+## 12.5.3 Using Semaphores for Mutual Exclusion
+如果将一个信号量初始值设为 1，则表示该信号量不能共享，这种信号量称为 binary semaphore，即其值只能为 0 和 1
+
+binary semaphore 可用用来提供互斥锁（mutex）
+
+对 mutex 执行 P 操作即为 locking the mutex
+对 mutex 执行 V 操作即为 unlocking the mutex
+一个线程 locking 但没有 unlocking a mutex 称为 holding the mutex
+
+A semaphore that is used as a counter for a set of available resources is called a counting semaphore.
+
+## 12.5.4 Using Semaphores to Schedule Shared Resources
+
+### Producer-Consumer Problem
+生产者和消费者共享一个有限的 buffer，生产者复制向 buffer 中加入数据，消费者从 buffer 中移除数据
+当 buffer 满了，生产者必须等待直到消费者消费 buffer 中的数据
+当 bufffer 为空，消费者必须等待直到生产者生产数据
+
+![](img/2023-10-11-11-19-15.png)
+
+
+代码：
+![](img/2023-10-11-11-32-02.png)
+![](img/2023-10-11-11-31-43.png)
+
+
+### Readers-Writers Problem
+
+![](img/2023-10-11-12-22-55.png)
+
+## 12.5.5 Putting It Together: A Concurrent Server Based on Prethreading
+
+![](img/2023-10-11-12-26-01.png)
+
+# 12.6 Using Threads for Parallelism
+见书中程序示例
+
+# 12.7 Other Concurrency Issues
+
+## 12.7.1 Thread Safety
+A function is said to be thread-safe if and only if it will always produce correct results when called repeatedly from multiple concurrent threads. 
+
