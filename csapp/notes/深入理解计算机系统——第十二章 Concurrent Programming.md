@@ -18,8 +18,17 @@ The simplest way to build a concurrent program is with processes, using familiar
 I/O复用（I/O Multiplexing）是一种机制，允许一个进程或线程同时监控多个I/O操作，而无需阻塞或轮询每个I/O操作
 
 例如通过 select 函数来实现 I/O 复用：
+```cpp
+#include <sys/select.h>
+int select(int n, fd_set *fdset, NULL, NULL, NULL);
+//Returns: nonzero count of ready descriptors, −1 on error
 
-![](img/2023-10-10-21-12-56.png)
+//Macros for manipulating descriptor sets
+FD_ZERO(fd_set *fdset); /* Clear all bits in fdset */
+FD_CLR(int fd, fd_set *fdset); /* Clear bit fd in fdset */
+FD_SET(int fd, fd_set *fdset); /* Turn on bit fd in fdset */
+FD_ISSET(int fd, fd_set *fdset); /* Is bit fd in fdset on? */
+```
 
 select 函数的第二个输入参数中 fd_set 是描述符集合（descriptor set），类似一个 bit vector of size n：
 $b_{n-1},...,b_{1},b_{0}$
