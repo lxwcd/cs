@@ -18,7 +18,6 @@
 # 9.1 Physical and Virtual Addressing  
 **physical address (PA)**：系统的主存是由 M 个连续的字节单元组成，每个字节都有一个唯一的**物理地址（physical address）**。第一个字节在地址 0，接着是地址1，地址2，等，见下图：  
 ![fig 9.1](https://img-blog.csdnimg.cn/7c02a986e16d40fa91836a48ea8381e2.png)  
-<br/>  
   
 **virtual address (VA)**：CPU 产生一种**虚拟地址（VA）**，然后通过**地址翻译**转化为**物理地址**传送给**主存**。  
   
@@ -27,7 +26,6 @@
 **memory management unit (MMU)**：**CPU** 中的**内存管理单元**，进行**地址翻译**。  
   
 ![A system that uses virtual addressing](https://img-blog.csdnimg.cn/038624df0277480e8e81d1e6431f275c.png)  
-<br/>  
   
 # 9.2 Address Spaces  
 **address space**：地址空间是一个由**非负整数地址**组成的有序的集合：${0,1,2, ...}$ 。  
@@ -53,7 +51,6 @@ This is the basic idea of **virtual memory**. **Each byte of main memory** has a
   
 **physical pages (PPs)**：**物理内存**被分割的**块**称为**物理页**，也是 P 字节，物理页也叫**页帧（page frames）**。  
   
-  
 任何时刻，**虚拟页**被分为**三个不相交的子集**：  
 - **Unallocated**  
 还没被 VM 系统创建的页，没有数据，**不占空间**  
@@ -64,6 +61,7 @@ This is the basic idea of **virtual memory**. **Each byte of main memory** has a
   
 见下图：  
 ![fig 9.3](https://img-blog.csdnimg.cn/a309d4bccd894234b03cd46d5452d122.png)  
+
 ## 9.3.1 DRAM Cache Organization  
 **约定**：  
 - Use the term **SRAM** cache to denote the L1, L2, and L3 cache memories between the **CPU and main memory**.  
@@ -83,23 +81,15 @@ This is the basic idea of **virtual memory**. **Each byte of main memory** has a
   
 假设每个 PTE 由一个 **valid bit** 和 **n-bit** 地址组成；  
 其中 **valid bit** 表示虚拟页是否缓存到 DRAM 中；  
-<br/>  
   
 ![fig 9.4](https://img-blog.csdnimg.cn/b87a92ed754040f8b66e5ad2ebcc52c0.png)  
-<br/>  
-  
-  
   
 ## 9.3.3 Page Hits  
 如下图 9.5 所示，当 CPU 读虚拟内存中 VP 2 的内容时，**地址翻译硬件**使用**虚拟地址**作为**索引**定位到**页表**中的 **PTE2** 的条目，该条目的**有效位**是 1，表示 VP 2 已被**缓存到内存**，因此用 **PTE 2** 中的**物理内存地址**（该地址指向 PP1 的起始位置）来查找数据的**物理地址**。  
-<br/>  
-  
 ![fig 9.5](https://img-blog.csdnimg.cn/0499adb4c8dd4e5a93ad2bd179508a50.png)  
+
 ## 9.3.4 Page Faults  
 **page fault**：虚拟内存的术语中用 **缺页（page fault）** 来表示 **DRAM 缓存未命中**。  
-  
-如下图所示：  
-<br/>  
 ![page fault](https://img-blog.csdnimg.cn/448911056a494e029b2326926065c2b8.png)<br/>  
   
 1. CPU 引用了一个没有缓存在 DRAM 中的 VP 3 中的数据；  
@@ -109,7 +99,6 @@ This is the basic idea of **virtual memory**. **Each byte of main memory** has a
 5.  然后内核从磁盘复制 VP 3 的内容放到内存的 PP 3 的地址处，然后更新 PTE 3，最后返回；  
 6. 处理程序返回时，它重启缺页指令，重新将 faulting virtual address 发送给地址翻译硬件，然后就能正常命中；  
   
-  
 由于历史原因，虚拟内存系统使用和 SRAM 缓存不同的术语。虚拟内存的术语中：  
 - blocks 被称为 pages  
 - **transferring a page** between **disk and memory** is known as **swapping or paging**  
@@ -117,9 +106,7 @@ This is the basic idea of **virtual memory**. **Each byte of main memory** has a
 - The **strategy** of **waiting** until the **last moment** to **swap in a page**, when a **miss** occurs, is known as **demand paging**  
   
 ## 9.3.5 Allocating Pages  
-见下图：  
 ![fig 9.8](https://img-blog.csdnimg.cn/65a5c2ed903744dbbbaac41071af0349.png)  
-<br/>  
   
 上图中分配一个新的虚拟页 VP 5，让 PTE 5 指向该地址。如 `malloc` 的调用会创建新的虚拟页。  
   
@@ -132,10 +119,10 @@ If the **working set size exceeds the size of physical memory,** then the progra
 In fact, operating systems provide a **separate page table**, and thus a **separate virtual address space**, for **each process**.  
   
 **多个虚拟页**可能被映射到**相同的共享的物理页**。  
-<br/>  
 ![fig 9.9](https://img-blog.csdnimg.cn/460cf43abc384eedb1cc61798dbda227.png)<br/>  
   
 VM simplifies **linking** and **loading**, the **sharing of code and data**, and **allocating memory to applications**.  
+
 - **Simplifying linking**  
 **独立的地址空间**允许每个**进程**的**内存映像**使用**相同的基本格式**。第8章 8.2.3 中的图 8.13 中展示了每个进程在一个给定的 Linux 系统中有相似的内存格式。这种一致性简化了连接器的设计和实现，允许连接器生成独立于物理内存中代码和数据的最终地址的完全链接的可执行程序。  
   
