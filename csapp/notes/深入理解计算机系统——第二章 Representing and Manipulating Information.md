@@ -10,6 +10,7 @@
       
 **virtual address space:** Every byte of memory is identified by a unique number, known as its ***address***, and set of memory is identified by a unique number, known as the ***virtual address space***.  
 [Understanding virtual address and virtual address space](https://stackoverflow.com/questions/9414565/understanding-virtual-address-and-virtual-address-space)  
+虚拟地址说明见 [内存管理](https://github.com/lxwcd/cs/blob/main/mos/notes/现代操作系统-3-内存管理.md)
       
 **program objects:** program data, instructuctions and control information.  
       
@@ -27,8 +28,7 @@ Conversely, to convert a hexadecimal number to decimal, we can multiply each of 
       
 ## 2.1.2 Data Size  
 **words:** every computer has a ***word size***, indicating the nominal size of pointer data. Since a ***virtual address*** is encoded by such a word,, the most important system parameter determined by the word size is the maximum size of the virtual address space. That is, for a machine with a `w-bit` word size, the virtual addresses can range from 0 to 2<sup>w </sup>-1, giving the program access to at most 2<sup>w </sup>bytes.  
-      
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2019112118081270.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0xlZTU2Nw==,size_16,color_FFFFFF,t_70)  
+![](https://img-blog.csdnimg.cn/2019112118081270.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0xlZTU2Nw==,size_16,color_FFFFFF,t_70)  
       
 The C language allows a variety of ways to order the keywords and to include or omit optional keywords. As examples, all of the following declarations have identical meaning:  
 >unsigned long  
@@ -571,10 +571,9 @@ When the ***fraction*** field is nonzero, the resulting value is called a **NaN*
 	- 最终结果为 `0 011 10`。  
       
 ## 2.4.4 Rounding  
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20191123182458272.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0xlZTU2Nw==,size_16,color_FFFFFF,t_70)  
+![](https://img-blog.csdnimg.cn/20191123182458272.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0xlZTU2Nw==,size_16,color_FFFFFF,t_70)  
       
 **1. Round-to-even**  
-      
 Round-to-even (also called round-to-nearest) is the default mode. It attempts to find a **closest** match.  
       
 The only design decision is to determine the effect of rounding values that are **halfway** between two possible results. Round-to-even mode adopts the convention that it rounds the number either upward or downward such that the *least significant digit* of the result is **even**.  

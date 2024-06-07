@@ -13,7 +13,6 @@
 > [cmov条件传送指令](https://blog.csdn.net/npu2017302288/article/details/109171692)  
 > [第18章-x86指令集之常用指令 ](https://www.cnblogs.com/mazhimazhi/p/15241450.html)  
   
-  
 # 3.2 Program Encoding  
 C 程序从源文件生成可执行文件的过程：  
   
@@ -24,13 +23,13 @@ C 程序从源文件生成可执行文件的过程：
 3. The **assembler** converts the assembly code into **binary object-code** files (*.o). **Object code** is one form of machine code—it contains binary representations of all of the instructions, but the **addresses of global values are not yet filled in**.   
   
 4. The **linker** merges these object-code files along with code implementing **library functions** (e.g., `printf`) and generates the final **executable code** file (as specified by the command-line directive -o p). **Executable** code is the second form of **machine code** we will consider—it is the exact form of code that is executed by the **processor**.   
+
 ## 3.2.1 Machine-Level Code  
+1. The format and behavior of a **machine-level program** is defined by the `instruction set architecture`, or `ISA`, defining the processor state, the format of the instructions, and the effect each of these instructions will have on the state.   
   
- 1. The format and behavior of a **machine-level program** is defined by the `instruction set architecture`, or `ISA`, defining the processor state, the format of the instructions, and the effect each of these instructions will have on the state.   
-  
- 2. The memory addresses used by a machine-level program are `virtual addresses`, providing a memory model that appears to be a very large byte array.  
+2. The memory addresses used by a machine-level program are `virtual addresses`, providing a memory model that appears to be a very large byte array.  
    
- Whereas C provides a model in which objects of different **data types** can be declared and allocated in memory, **machine code** views the **memory** as simply a **large byte-addressable array**.  
+Whereas C provides a model in which objects of different **data types** can be declared and allocated in memory, **machine code** views the **memory** as simply a **large byte-addressable array**.  
   
 指令集介绍：  
 > [CPU 指令集](https://www.cnblogs.com/yilang/p/10967374.html)  
@@ -41,22 +40,19 @@ C 程序从源文件生成可执行文件的过程：
 > [virtual address ](https://www.techtarget.com/whatis/definition/virtual-address#:~:text=A%20virtual%20address%20is%20a%20binary%20number%20in,to%20a%20hard%20disk%20or%20internal%20flash%20drive.)  
   
 # 3.3 Data Formats  
+> [线路位宽与 CPU 位宽](https://xiaolincoding.com/os/1_hardware/how_cpu_run.html#线路位宽与-cpu-位宽) 
+
 Due to its origins as a `16-bit architecture` that expanded into a `32-bit` one, *Intel* uses the term **“word”** to refer to a `16-bit` data type. Based on this, they refer to `32- bit` quantities as **“double words,”** and `64-bit` quantities as **“quad words.”**  
 ![Sizes of C data types in x86-64](https://img-blog.csdnimg.cn/930d3a7e9d4f4b06a8c40246f8e6fcbc.png)  
-<br/>  
   
 # 3.4 Accessing Information  
 An x86-64 central processing unit (CPU) contains a set of **16 general-purpose registers** storing **64-bit values**. These registers are used to store **integer** data as well as **pointers**.   
-  
 ![Integer registers](https://img-blog.csdnimg.cn/cb69209fe82f4a3e920b13297ddead7f.png)  
   
 **整数寄存器**，用来存放`整型`和`指针`，有6个寄存器用来存放6个参数，如果参数超过6个，则放在`栈`上。  
   
-  
 ## 3.4.1 Operand Specifiers  
 `x86-64` 支持操作数形式如下：  
-<br/>  
-  
 ![Operand forms](https://img-blog.csdnimg.cn/657ffc0bc77f42a6815fd9548f098810.png)<br/>  
   
 源操作数有三种：立即数（常数），寄存器，内存  
@@ -77,25 +73,20 @@ An x86-64 central processing unit (CPU) contains a set of **16 general-purpose r
   
 6. 对于指令格式 $Imm(r_{b}, r_{i}, s)$，$r_{b}$ 为基址寄存器，$r_{i}$ 为变址寄存器，$s$ 为比例因子，其值必须为 1，2，4或8（对应 byte，word，double word， quad word 大小）。基址和变址寄存器必须为 64 位寄存器（图 3.2 中最左边一列）。最后有效地址的计算公式为：$Imm + R[r_{b}] + R[r_{i}] \cdot s$。  
   
-  
 ************  
   
 示例：  
 ![practice3.1](https://img-blog.csdnimg.cn/1eb459aa1cb549b0a858740d674dbdaf.png)  
-<br/>  
-  
   
 ## 3.4.2 Data Movement Instructions  
 `MOV` 指令：These instructions copy data from a **source** location to a **destination** location, **without any transformation**.   
   
 四种形式：`movb, movw, movl, and movq`，效果相同，只是数据大小不同，分别为 `1,2,4,8` 字节：  
-<br/>  
 ![Simple data movement instructions](https://img-blog.csdnimg.cn/3d13adad3dea4b9d8b1ec0440ddfc84b.png)<br/>  
   
 **********  
   
 示例：  
-  
 |指令  |解释  |  
 |:--|:--|  
 | movl $0x4050,%eax      |   Immediate--Register, 4 bytes|  
@@ -104,7 +95,6 @@ An x86-64 central processing unit (CPU) contains a set of **16 general-purpose r
 | movb $-17,(%esp) |Immediate--Memory, 1 byte|  
 | movq %rax,-12(%rbp) |Register--Memory, 8 bytes|  
   
-  
 1. `MOV` 指令**源操作数和目标操作数不能同时为内存**，因为将数据从一个内存地址复制到另一个内存地址需要**两条指令**完成，需要先将源地址的数据放到一个寄存器中，再从该寄存器的数值写到目标内存地址。  
 2. 指令和所用寄存器大小需匹配，如用 `movl` 时，寄存器用 32 位寄存器。  
 3. 通常，`mov` 指令只会根据**目标操作数**来更新寄存器中的特定位，如用 `movabsq` 将立即数复制到64位寄存器中，则目标寄存器的 64 位都用到，更新数据，源数据没有 64 位，则高位用 0 填充；而对于 `movw`指令，目标寄存器位 16 位，因此数据只更新低 16 位，高位不更新；但 `movl` 是一个特例，更新低 32 位后，会将高 32 位填充为 0。见下面例子，第一次用 `movabsq` 指令后更新 `%rax` 的全部 64 位数，之后用 `movb` 指令，目标寄存器是 `%al` ，即 `%rax` 寄存器的低 8 位，源操作数 -1 的补码为 FF，因此低 8 位更新为 FF，其他高位不变：  
@@ -112,24 +102,16 @@ An x86-64 central processing unit (CPU) contains a set of **16 general-purpose r
 4. 当用 `movq` 指令且**源操作数**为**立即数**时，**立即数**只能是 32 位的补码，而不能是 64 位，高位将用符号位扩展从而得到 64 位（第二章介绍过符号位扩展补码的高位，其结果不变）。   
 5. 用 `movabsq` 指令时，源操作数可以是任意的 64 位立即数，目标操作数只能是寄存器。  
   
-  
 当目标操作数尺寸大于源操作数，可以在高位进行`零扩展`或者`符号位扩展`。  
   
 零扩展 `movz` 系列指令：剩下的高位填充 0。  
-<br/>  
-  
 ![Zero-extending data movement instructions](https://img-blog.csdnimg.cn/1c21fc139485407ebbdca09843a612ca.png)<br/>  
-  
 **注意**：这里没有 `movzlq`，因为当使用 `movl` 指令时，且目标操作数为寄存器，那么寄存器的高4个字节会填充 `0`。  
   
 **要求**：源操作数为寄存器或者内存地址，目标操作数位寄存器。  
   
-<br/>  
-  
 符号位扩展 `movs` 系列指令：剩下的高位用符号位填充：  
-  
 ![Sign-extending data movement instructions](https://img-blog.csdnimg.cn/54487123e3ae49c9ada244a55903b7eb.png)<br/>  
-  
   
 示例：  
 ![fig 3.7](https://img-blog.csdnimg.cn/0258d4cfa62d49f2a927d681413299cf.png)<br/>  
@@ -140,24 +122,22 @@ An x86-64 central processing unit (CPU) contains a set of **16 general-purpose r
 最后将寄存器 `%rax` 的值，即 `x` 作为返回值返回。  
   
 上述的局部变量保存在寄存器而非内存中，寄存器比内存的访问速度更快。  
+
 ***********************************************  
   
 **示例1：**  
 ![practice 3.2](https://img-blog.csdnimg.cn/aad6e0d9de7b4af79b82926c086bdd05.png)  
-<br/>  
   
 根据图 3.2 可知所用寄存器大小，题解中说对于 x86-64，内存引用总是 quad word。  
 *********************************  
   
 **示例2：**  
 ![practice 3.3](https://img-blog.csdnimg.cn/cc4672d32a7b455baad0e90265f305a4.png)  
-<br/>  
   
 *************************  
   
 **示例3：**  
 ![practice 3.5](https://img-blog.csdnimg.cn/f740888a40644eb8a4ae8f4cba98d089.png)  
-<br/>  
   
 1. 因为参数类型为指针，用 8 字节寄存器。  
 2. 根据图 3.2 可知，第一个到第三个参数分别为 %rdi，%dsi 和  %rdx，三个寄存器的值分别为 xp，yp，和 zp，为地址。  
@@ -168,11 +148,9 @@ An x86-64 central processing unit (CPU) contains a set of **16 general-purpose r
   
 因此对应的 C 代码如下：  
 ![solution 3.5](https://img-blog.csdnimg.cn/9f4a415eb8164d3888a6453995f18f70.png)  
-<br/>  
   
 ## 3.4.4 Pushing and Popping Stack Data  
 - **栈** （stack）是一种**数据结构**，遵循**先进后出**的规则，可以增加（push）或删除（pop）数据。  
-  
 - **栈**可以由**数组来实现**，数组的**末尾为栈顶**，添加或删除元素在**栈顶**操作。  
 - **程序**用栈来管理**过程调用**与**返回的状态**。  
 - 对于 `×86-64`，栈存在内存的某个区域，且向下增长，即栈底在高位地址处，当 push 指令添加数据时，**栈顶向低位扩展**，**栈指针** `%rsp` 指向**栈顶**位置。  
@@ -180,12 +158,9 @@ An x86-64 central processing unit (CPU) contains a set of **16 general-purpose r
   
 `Push` 和 `Pop` 指令：  
 ![Push and pop instructions](https://img-blog.csdnimg.cn/f6a2698e6a6e4e66832c3192750bd9d8.png)  
-<br/>  
   
 栈操作介绍：  
 ![Illustration of stack operation](https://img-blog.csdnimg.cn/d8ffe7d2588b44b5adc1e006a703dcd0.png)  
-<br/>  
-  
   
 # 3.5 Arithmetic and Logical Operations  
 每一种类型的指令都会对应操作 4 种不同大小数据的指令。  
@@ -194,17 +169,15 @@ An x86-64 central processing unit (CPU) contains a set of **16 general-purpose r
 The operations are divided into **four groups**: load effective address, unary, binary, and shifts.   
   
 ## 3.5.1 Load Effective Address  
-  
 `load effective address` 指令是 `movq` 指令的一个变体，从**内存读数据到寄存器**，但不是内存引用，而是**复制内存地址到寄存器**。  
-  
 ![Integer arithmetic operations](https://img-blog.csdnimg.cn/189341473f364e0eaba6c1fb3e6da864.png)<br/>  
   
 例如：**%rax** 的值为 **x**，则指令 `leaq 7(%rdx,%rdx,4), %rax` 表示将寄存器 **%rax** 的值设为 **7 + 5x**，这个过程**只复制内存地址而不访问内存**; 而如果是 `movq` 指令，则是将内存地址为 **7 + 5x** 的值设置为寄存器 **%rax** 的值。  
+
 ********************  
   
 示例：  
 ![practice 3.7](https://img-blog.csdnimg.cn/45be708eb0af4895b74bce3facb8cd25.png)  
-<br/>  
   
 1. 第一个参数 x 存在寄存器 %rdi 中，第二个参数 y 存在寄存器 %rsi 中，第三个参数 z 存在寄存器  %rdx 中。  
 2. 第一个指令源操作数为地址 10 * y，leaq 指令只复制地址而不是同 mov 指令一样访问内存，因此该指令将 %rbx 的值设置为 10 * y。  
@@ -214,7 +187,6 @@ The operations are divided into **four groups**: load effective address, unary, 
   
 ## 3.5.2 Unary and Binary Operations  
 图 3.10 中第一组为一元运算， `INC` 指令相当于 C 语言的自增运算，如果是 `incq (%rsp)` 则会使**栈顶**的地址加 8 字节。  
-  
 图 3.10 中第三组加减等操作为二元运算，例如 `subq %rax,%rdx ` 指令会将寄存器 `%rdx` 的值设置为 原始 `%rdx` 的值减去 `%rax` 的值。  
 第三组的二元运算的源操作数（第一个操作数）可以是立即数，寄存器 和 内存地址，而目标操作数（第二个操作数）只能是寄存器或内存地址，同 mov 指令相同，**两个操作数不能同时为内存地址**。  
 当第二个操作数为**内存地址**时，处理器从内存地址读数据，执行运算操作后，将结果写回到该内存地址。  
@@ -225,9 +197,7 @@ The operations are divided into **four groups**: load effective address, unary, 
 ![practice 3.8](https://img-blog.csdnimg.cn/3012113e519b480b8db9561eea380ab2.png)<br/>  
   
 答案如下：  
-  
 ![solution 3.8](https://img-blog.csdnimg.cn/e325dfa8008841a792832c3109f6ebf4.png)  
-<br/>  
   
 1. 第一条指令，源操作数为寄存器 %rcx 的值 0x1，目标操作数为内存地址 0x100 （寄存器 %rax 的值），将 0x 100 的值设置为 0xFF ( 初始内存中的值) + 0x01 (%rcx 的值) = 0x100。  
 2. 第二条指令，目标操作数为内存地址 8 + 0x100 = 0x108，执行减法指令：0xAB（内存地址为 0x108 的值） - 0x3（%rdx 的值）= 0xA8，最后将计算结果写回到内存地址 0x108 处。  
@@ -248,14 +218,12 @@ The operations are divided into **four groups**: load effective address, unary, 
   
 示例：  
 ![practice 3.9](https://img-blog.csdnimg.cn/fadc33a52c4e412b8689482c9aaf88fa.png)  
-<br/>  
   
 ## 3.5.4 Discussion  
 图 3.10 中的指令能用于**无符号数或者补码**计算，有符号和无符号只有**右移运算**有区别，第二章有介绍相关知识。  
   
 示例 1：  
 ![fig 3.11](https://img-blog.csdnimg.cn/74c9f94d15b84160ae99d9717b0efcf9.png)  
-<br/>  
   
 上面计算第二个乘法语句 z * 48 使用了两条指令，先计算 3 * z，然后左移 4 位，因为左移 1 位相当于乘以 2，因此结果位 3 * z * 16 得到 z * 48。  
   
@@ -263,22 +231,21 @@ The operations are divided into **four groups**: load effective address, unary, 
   
 示例2：  
 ![practice 3.10](https://img-blog.csdnimg.cn/319c42d2a3b04c7d933c6c4074482b61.png)  
-<br/>  
+
 *********************  
   
 示例3：  
 ![practice 3.11](https://img-blog.csdnimg.cn/268b48c8b33c49658ea698e34d21b520.png)  
-<br/>  
   
 1. 该异或的指令可以将寄存器的值设置为 0，相同的位异或后为0，因此将 `%rcx` 的值与自己异或后为0，然后将结果 0 设置为 `%rcx` 的值。  
 2. 可以直接设置该值为 0：`movq $0, %rcx`。  
 3. 没明白，答案说**任何指令更新低位的 4 字节会造成高位 4 字节为 0 （？？没明白）**，因此异或时只用处理低 4 字节，用 xorl %ecx,%ecx；或者用 movl $0, %ecx，因为 movl 会将高位设置为 0 （前面有讲）。  
 ![solution 3.11](https://img-blog.csdnimg.cn/2574a997ca9d49d5b5e38e92a71f7285.png)  
-<br/>  
   
 ## 3.5.5 Special Arithmetic Operations  
 特殊的算数操作：  
 ![Special Arithmetic Operations](https://img-blog.csdnimg.cn/94ba3b3657554270a4e6d777a5c52d85.png)  
+
 # 3.6 Control  
 ## 3.6.1 Condition Codes  
 In addition to the **integer registers**, the CPU maintains a set of **single-bit condition code registers** describing **attributes** of the most recent **arithmetic** or **logical** operation.   
@@ -302,7 +269,6 @@ These registers can then be tested to perform **conditional branches**.
 ## 3.6.2 Accessing the Condition Codes  
 `SET` 指令：  
 ![The set instructions](https://img-blog.csdnimg.cn/98ba1d660fed4319a2411ddf334735f3.png)  
-<br/>  
   
 `SET` 的目标操作数：图 3.2 中最右侧低位 1 字节的寄存器，或者单字节的内存地址，其结果为 0 或者 1。  
 如果想得到 32 位 或者 64 位 的结果，需3.9要将高位清零。  
@@ -310,12 +276,11 @@ These registers can then be tested to perform **conditional branches**.
 ## 3.6.3 Jump Instructions  
 `jump` 指令：  
 ![The jump instructions](https://img-blog.csdnimg.cn/a5b46e538a4c4e25bd4168b2742aa728.png)  
-<br/>  
   
 `jmp` 指令有两种跳转方式：  
 - **direct jump**  
 The jump target is  encoded as part of the instruction:  
-![在这里插入图片描述](https://img-blog.csdnimg.cn/c0d3f7955a6845578c762d72b7aa4898.png)  
+![](https://img-blog.csdnimg.cn/c0d3f7955a6845578c762d72b7aa4898.png)  
   
 - **indirect jump**  
 The jump target is read from a register or a memory location.  
@@ -341,9 +306,7 @@ Unlike **conditional jumps**, the processor can execute **conditional move** ins
 条件传送指令无需预测，效率更高。  
   
 条件传送指令：  
-  
 ![The conditional move instructions](https://img-blog.csdnimg.cn/6ef78327d22c42c8be98fec18f3a46ea.png)  
-<br/>  
   
 条件转移示例：  
 如果要做如下判断：  
@@ -443,7 +406,6 @@ ret
   
 栈结构：  
 ![General stack frame structure](https://img-blog.csdnimg.cn/85a56a157885442aa32153ed52302ba7.png)  
-<br/>  
   
 ## 3.7.1 The Run-Time Stack  
 Using our example of procedure `P` calling procedure `Q`, we can see that while `Q` is executing, `P`, along with any of the procedures in the chain of calls up to `P`, is temporarily **suspended**.   
@@ -493,15 +455,14 @@ By convention, registers `%rbx, %rbp, and %r12–%r15` are classified as `callee
 寄存器 `%rbx, %rbp` 和 `%r12–%r15` 为 `Callee Saved` 寄存器，当一个函数要改变这些寄存器的值时，必须先压入栈中保存再在返回时从栈中弹出恢复数据  
   
 示例：  
-  
 ![Code demonstrating use of callee-saved registers](https://img-blog.csdnimg.cn/f53b4598f9394a938f609e86342eafb6.png)  
-<br/>  
   
 上述代码使用 `callee-saved` 寄存器 `%rbp`来存放 `x` 的值，用寄存器 `%rbx` 来存放 `Q(y)` 计算的结果。在函数的最开始，先将这两个寄存器的内容压入栈中，最后在函数的结果再弹出栈的内容到寄存器中。  
 注意压入栈和弹出栈时的顺序相反（先进后出）。  
   
 # 3.8 Array Allocation and Access  
 **机器代码里没有数组**的概念，数组即为**连续的字节**集合。  
+
 ## 3.8.1 Basic Principles  
 For data type `T` and `integer constant N`, consider a declaration of the form `T A[N]`;  
   
@@ -525,11 +486,9 @@ That is, if $p$ is a pointer to data of type $T$ , and the value of $p$ is $x_{p
   
 示例：  
 ![Examples](https://img-blog.csdnimg.cn/c06edb8c9a884a1b9f0f2435005e14da.png)  
-<br/>  
-  
 上述例子返回值的存放：the result being stored in either register `%eax` (for data) or register `%rax` (for pointers).  
   
-述返回结果为 `int` 类型的数组元素值时，用 `movl` 和寄存器 `%eax` ，而返回值为 `int *` 指针时，为 `leaq` （`leaq` 指令不是引用内存而是复制地址）和寄存器 `%rax`。  
+上述返回结果为 `int` 类型的数组元素值时，用 `movl` 和寄存器 `%eax` ，而返回值为 `int *` 指针时，为 `leaq` （`leaq` 指令不是引用内存而是复制地址）和寄存器 `%rax`。  
   
 最后一个例子展示计算有相同结构的两个指针相减，返回结果类型为 `long`，数值等于两个地址的差值除以元素类型的大小，即为两个地址相差的元素个数。  
   
@@ -540,7 +499,6 @@ That is, if $p$ is a pointer to data of type $T$ , and the value of $p$ is $x_{p
 其中 `L ` 是数据类型 `T` 的大小（bytes)。  
   
 数组的结构如下图：  
-  
 ![Nested Arrays](https://img-blog.csdnimg.cn/ded133cfbcc94d468bbf1c3dff4922fe.png)  
   
 ## 3.8.4 Fixed-Size Arrays  
@@ -552,13 +510,11 @@ typedef int fix_matrix[N][N];
 ```  
   
 ![fig 3.37](https://img-blog.csdnimg.cn/639623655b1943db944cf32c3c0494f4.png)  
-<br/>  
   
 优化后的汇编代码如下：  
   
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2b287f4bbf284465a41450ceafd270ca.png)  
-![在这里插入图片描述](https://img-blog.csdnimg.cn/c3b263b0e74f451494b89dca79de46a6.png)  
-<br/>  
+![](https://img-blog.csdnimg.cn/2b287f4bbf284465a41450ceafd270ca.png)  
+![](https://img-blog.csdnimg.cn/c3b263b0e74f451494b89dca79de46a6.png)  
   
 `salq` 为左移指令，对于 &$A[i][0]$，根据公式 &$D[i][j]$ = $x_{D} + L(C \cdot i + j)$，可得到 $x_{A} + 64i$，而 `i` 左移 `6` 位即为 $i * 2^6$。  
   
@@ -577,19 +533,15 @@ int var_ele(long n, int A[n][n], long i, long j)
 }  
 ```  
 注意 `n` 要在 `A[n][n]` 前声明，汇编代码如下：  
-  
 ![referencing function](https://img-blog.csdnimg.cn/6535e130644f471d896b6ab0302608e8.png)  
   
 这里计算 $n \cdot i$ 用到 `imulq` 乘法指令，而非用左移指令。  
   
 示例：  
 ![fig 3.38](https://img-blog.csdnimg.cn/029a74bf7acb4381a069b46c33e6efc2.png)  
-<br/>  
   
 优化后的汇编代码：  
-  
 ![assembly code](https://img-blog.csdnimg.cn/4806aec55e6444eca05aced3438ff749.png)  
-<br/>  
   
 ## 3.9 Heterogeneous Data Structures  
 ### 3.9.1 Structures  
@@ -666,7 +618,6 @@ When using unions to combine data types of **different sizes**, **byte-ordering*
 ### 3.9.3 Data Alignment  
 > [结构体字节对齐，C语言结构体字节对齐详解](http://c.biancheng.net/view/243.html)  
   
-  
 **数据对齐**：基于硬件的需求  
 **Alignment restrictions** simplify the design of the hardware forming the interface between the `processor` and the `memory system`.  
   
@@ -674,7 +625,6 @@ When using unions to combine data types of **different sizes**, **byte-ordering*
   
 对齐的规则：  
 Their alignment rule is based on the principle that any primitive object of `K` bytes must have an address that is a **multiple of K**. We can see that this rule leads to the following alignments:  
-  
 ![alignment rule](https://img-blog.csdnimg.cn/8326b402b5d641bfb618f9c1317ca498.png)  
   
 具体 `K` 的大小是多少，由结构体中尺寸最大的类型对应的 `K` 决定。  
@@ -702,14 +652,13 @@ struct S2
 ```  
 对齐后：  
 ![alignment](https://img-blog.csdnimg.cn/7a9a01bd8aa8448a9b100435434f38b1.png)  
-<br/>  
   
 # 3.10 Combining Control and Data in Machine-Level Programs  
 ## 3.10.3 Out-of-Bounds Memory References and Buffer Overflow  
 `GDB` 调试的命令：  
 ![Example gdb commands](https://img-blog.csdnimg.cn/c99e25f56ce6444a8e52ee1ee592a0c0.png)  
+
 ## 3.10.4 Thwarting Buffer Overflow Attacks (?)  
-  
 未看  
 缓冲区溢出解决方案：  
 1. Stack Randomization  
@@ -744,7 +693,6 @@ To manage a `variable-size stack frame`, `x86-64` code uses register `%rbp` to s
   
 栈帧的结构如下：  
 ![Stack frame structure](https://img-blog.csdnimg.cn/f217d87a4b5f4c3987048a5c5ac232f8.png)  
-<br/>  
   
 We see that the code must **save the previous version** of `%rbp` on the `stack`, since it is a `callee-saved register`.   
 It then keeps `%rbp` pointing to this position throughout the execution of the function, and it references `fixed-length local variables`, such as `i`, at offsets relative to `%rbp`.  
@@ -764,24 +712,22 @@ It then keeps `%rbp` pointing to this position throughout the execution of the f
 10. 第 11 行， 将 `%rcx` 的值设置为 `%r8` 的值。  
   
 假设 n 为 5，s1 为 2065 和 n 为 6，s1 为 2064，则其他的值为：  
-  
 ![solution 3.49](https://img-blog.csdnimg.cn/d0ad07c1bf49408aa4def92557a4377b.png)  
-  
   
 In earlier versions of `x86 code`, the frame pointer was used with every function call. With `x86-64 code`, it is used only in cases where the `stack frame` may be of **variable size**, as is the case for function `vframe`.   
   
-  
 # 3.11 Floating-Point Code  
-  
 未看  
 存放浮点数据的寄存器：  
 ![Media registers](https://img-blog.csdnimg.cn/e99c04da6142486794cf0349f97204a8.png)  
   
 Floating-point movement instructions:  
 ![Floating-point movement instructions](https://img-blog.csdnimg.cn/2b881d9d47de44549378a82199a44d5a.png)  
+
 ## 3.11.1 Floating-Point Movement and Conversion Operations  
 浮点型转换操作：  
 ![floating-point conversion operations](https://img-blog.csdnimg.cn/181f2f5762b64fa7b6bcee56d2297c89.png)  
+
 ## 3.11.6 Floating-Point Comparison Operations  
 浮点型比较：  
 ![Floating-Point Comparison Operations](https://img-blog.csdnimg.cn/f176bb63843e4c28853509ab105f90f5.png)  
