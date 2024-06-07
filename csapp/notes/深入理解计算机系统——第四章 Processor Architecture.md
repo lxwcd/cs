@@ -337,7 +337,6 @@ The final stage in SEQ generates the new value of the program counter (see Figur
 A key feature of **pipelining** is that it increases the `throughput` of the system (i.e., the number of customers served per unit time), but it may also slightly increase the `latency` (i.e., the time required to service an individual customer).  
     
 Figure 4.32(a) shows an example of a simple **nonpipelined** hardware system.  
-    
 ![Unpipelined computation hardware](https://img-blog.csdnimg.cn/17c3d512687b4b93982c1f401f413176.png)<br/>  
     
 In this implementation, we must complete one instruction before beginning the next.  
@@ -349,7 +348,58 @@ In this implementation, we must complete one instruction before beginning the ne
 **Three-stage pipelined computation hardware**:  
 ![Three-stage pipelined computation hardware](https://img-blog.csdnimg.cn/453a5d030beb4746aeb9bef28a79d68c.png)  
 ![Three-stage pipeline timing](https://img-blog.csdnimg.cn/42a6584c32bb48e589a32fd97e362f09.png)  
+
+**************************
+
+额外补充：
+
+在计算机体系结构中，pipeline（流水线）是一种重要的技术，用于提高CPU的指令处理速度和效率。它通过将指令的执行过程分解成多个较小的步骤（或称“阶段”），并且让这些步骤并行执行，从而达到提升处理速度的目的。每个步骤由专门的硬件部件负责，这些部件可以同时工作，处理不同指令的不同阶段。以下是pipeline的基本阶段和每个阶段的功能：
+
+1. **取指阶段（Instruction Fetch, IF）**：
+    - **指令寄存器（Instruction Register）**：临时存储当前正在获取的指令。
+    - **程序计数器（Program Counter, PC）**：指向下一条要执行指令的内存地址。
+    - **指令缓存（Instruction Cache）**：减少从主内存读取指令的延迟。
+
+2. **译码阶段（Instruction Decode, ID）**：
+    - **控制单元（Control Unit）**：解析指令操作码，生成用于管控其他组件操作的控制信号。
+    - **寄存器文件（Register File）**：存储CPU中的寄存器，控制单元从中获取指令中引用的寄存器值。
+
+3. **执行阶段（Execute, EX）**：
+    - **算术逻辑单元（Arithmetic Logic Unit, ALU）**：执行算术与逻辑操作。
+    - **移位器（Shifter）**：进行位移操作。
+    - **乘除法单元（Multiplication and Division Unit）**：处理乘法和除法运算，可能并非所有CPU都有专用硬件。
+
+4. **访存阶段（Memory Access, MEM）**：
+    - **数据缓存（Data Cache）**：减少从主内存读写数据的延迟。
+    - **内存管理单元（Memory Management Unit, MMU）**：处理虚拟地址到物理地址的转换。
+
+5. **写回阶段（Write Back, WB）**：
+    - **寄存器文件（Register File）**：将执行结果写回到指定的寄存器。
   
+pipeline（流水线）的主要优势包括：
+
+1. **吞吐率提高**：由于在任意时刻可以有多条指令处于执行的不同阶段，因此每个时钟周期都可能有一条指令完成，提升了CPU的吞吐率。
+
+2. **资源利用率提升**：流水线允许将处理器内部的资源（比如算术逻辑单元、寄存器等）分时复用，使得这些资源不会闲置，从而提高了资源的利用效率。
+
+3. **提高时钟频率**：由于流水线将指令执行过程分解为更小的步骤，每个步骤的完成时间可以更短，从而允许处理器在更高的时钟频率下运行。
+
+4. **非阻塞性能**：在执行长指令时，流水线可以继续处理其他指令，提高了指令处理的非阻塞性能。
+
+5. **并行处理**：虽然单个指令的延迟（从开始到结束的时间）没有变短，但多条指令可以并行进入不同的流水线阶段，整体上加速了程序的执行。
+
+使用流水线技术可以使单核心的CPU效率大幅度提升，相较于非流水线处理器，在相同时间内完成更多工作。
+  
+流水线的主要优点是能够大大提高指令的吞吐率，也就是单位时间内能够执行的指令数量。这是通过同时在不同的阶段并行处理多条指令来实现的。但是，流水线也有其缺点，比如可能会遇到“冲突”问题，导致流水线暂停。这些冲突包括：
+
+- **结构冲突（Structural Hazards）**：当硬件资源不足以支持下一个指令的某个阶段时发生。
+- **数据冲突（Data Hazards）**：当流水线中的后续指令需要等待前面指令的执行结果时发生。
+- **控制冲突（Control Hazards）**：由于分支指令导致的预测错误而发生。
+
+为了解决这些问题，现代CPU采用了各种技术和策略，比如流水线停顿（Pipeline Stalling）、数据前递（Data Forwarding）、分支预测（Branch Prediction）等，以最小化冲突对性能的影响。
+
+通过高效地管理和优化这些流水线阶段和相关技术，计算机体系结构能够实现更高的性能和效率。
+
 ## 4.4.2 A Detailed Look at Pipeline Operation  
 **Figure 4.35** traces the circuit activity between times 240 and 360, as instruction `I1` (shown in dark gray) propagates through stage `C`, `I2` (shown in blue) propagates through stage `B`, and `I3` (shown in light gray) propagates through stage `A`.  
 ![One clock cycle of pipeline operation](https://img-blog.csdnimg.cn/0192bb8d2dba4ffc900a684dfba95843.png)<br/>  
