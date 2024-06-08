@@ -66,7 +66,7 @@ Easy to have happen in C:
 延迟界限：一系列的指令有依赖关系，必须按照严格的顺序执行。  
     
 **The throughput bound**:  characterizes the **raw computing capacity** of the **processor’s functional units**. This bound becomes the **ultimate limit** on program performance.  
-吞吐量限制：基于硬件的数量和性能，功能单元的原始计算能力。该限制是程序能优化的极限，  
+吞吐量限制：基于硬件的数量和性能，功能单元的原始计算能力。该限制是程序能优化的极限。  
     
 ## 5.7.1 Overall Operation  
 Figure 5.11 shows a very simplified view of a modern microprocessor.  
